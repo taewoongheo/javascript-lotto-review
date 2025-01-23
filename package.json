@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node src/index.js",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles",
+    "testwatch": "jest --watch"
   },
   "devDependencies": {
     "@babel/core": "^7.25.8",
