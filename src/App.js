@@ -1,5 +1,9 @@
+import lottoMachineModule from './LottoMachine/LottoMachineModule.js';
+
 class App {
-  async run() {}
+  async run() {
+    lottoMachineModule.init();
+  }
 }
 
 export default App;
