@@ -6,7 +6,7 @@ import { Console } from '@woowacourse/mission-utils';
  * @returns {Promise<string>}
  */
 export async function input(query) {
-  return await Console.readLineAsync(`${query}`);
+  return await Console.readLineAsync(`${query}\n`);
 }
 
 /**

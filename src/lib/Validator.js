@@ -25,7 +25,7 @@ class Validator {
   with(condition, error) {
     const { message } = error;
     if (!condition(this.#value)) {
-      throw new Error(`[ERROR] ${message}`);
+      throw new Error(`${message}`);
     }
 
     return this;
