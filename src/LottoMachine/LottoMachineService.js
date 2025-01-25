@@ -1,3 +1,4 @@
+import WinningNumbersValidationStrategy from '../validation/winning-numbers-validation.strategy.js';
 import PurchaseAmountValidationStrategy from '../validation/purchase-amount-validation.strategy.js';
 
 class LottoMachineService {
@@ -12,7 +13,16 @@ class LottoMachineService {
     const { ValidationContext: lotteryMachineValidator } = providers;
 
     this.#lotteryMachineModel = lotteryMachineModel;
-    this.lotteryMachineValidator = lotteryMachineValidator;
+    this.#lotteryMachineValidator = lotteryMachineValidator;
+  }
+
+  /**
+   *
+   * @param {string} purchaseAmount
+   * @returns {number}
+   */
+  #parsePurchaseAmount(purchaseAmount) {
+    return Number(purchaseAmount);
   }
 
   /**
@@ -20,10 +30,40 @@ class LottoMachineService {
    * @param {string} purchaseAmount
    */
   inputPurchaseAmount(purchaseAmount) {
-    this.lotteryMachineValidator.validate(
-      new PurchaseAmountValidationStrategy(purchaseAmount),
+    this.#lotteryMachineValidator.validate(
+      new PurchaseAmountValidationStrategy(
+        purchaseAmount,
+        this.#parsePurchaseAmount,
+      ),
     );
-    this.#lotteryMachineModel.setPurchaseAmount(Number(purchaseAmount));
+    this.#lotteryMachineModel.setPurchaseAmount(
+      this.#parsePurchaseAmount(purchaseAmount),
+    );
+  }
+
+  /**
+   *
+   * @param {string} winningNumbers
+   * @returns {Array<number>}
+   */
+  #parseWinningNumbers(winningNumbers) {
+    return winningNumbers.split(',').map(Number);
+  }
+
+  /**
+   *
+   * @param {string} winningNumbers
+   */
+  inputWinningNumbers(winningNumbers) {
+    this.#lotteryMachineValidator.validate(
+      new WinningNumbersValidationStrategy(
+        winningNumbers,
+        this.#parseWinningNumbers,
+      ),
+    );
+    this.#lotteryMachineModel.setWinningNumbers(
+      this.#parseWinningNumbers(winningNumbers),
+    );
   }
 }
 

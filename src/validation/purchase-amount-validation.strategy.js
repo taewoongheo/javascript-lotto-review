@@ -12,6 +12,9 @@ class PurchaseAmountValidationStrategy extends ValidationStrategy {
   /** @type {number} */
   #purchaseAmount;
 
+  /** @type {{purchaseAmount: string} => number} */
+  #parse;
+
   static ERROR_MESSAGE = Object.freeze({
     INPUT_CAN_NOT_BE_EMPTY: '[ERROR] 빈 값은 입력할 수 없습니다.',
     INPUT_MUST_BE_POSITIVE_INTEGER: '[ERROR] 구입금액은 양의 정수여야 합니다',
@@ -26,10 +29,11 @@ class PurchaseAmountValidationStrategy extends ValidationStrategy {
    *
    * @param {number} purchaseAmount
    */
-  constructor(purchaseAmount) {
+  constructor(purchaseAmount, parse) {
     super();
 
     this.#purchaseAmount = purchaseAmount;
+    this.#parse = parse;
   }
 
   /**
@@ -58,7 +62,7 @@ class PurchaseAmountValidationStrategy extends ValidationStrategy {
 
   #validatePurchaseAmount() {
     new Validator()
-      .validate(this.#purchaseAmount)
+      .validate(this.#parse(this.#purchaseAmount))
       .with(this.#isNotEmpty, {
         message:
           PurchaseAmountValidationStrategy.ERROR_MESSAGE.INPUT_CAN_NOT_BE_EMPTY,

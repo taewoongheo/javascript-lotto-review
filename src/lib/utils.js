@@ -1,3 +1,5 @@
+/* eslint no-restricted-globals: "off" */
+
 /**
  *
  * @param {string} value
@@ -42,4 +44,28 @@ export function isIntegerNumericString(value) {
  */
 export function isDivisible(value, divisor) {
   return value % divisor === 0;
+}
+
+/**
+ *
+ * @param {Array<number>} value
+ * @returns {boolean}
+ */
+export function checkForDuplicateNumbers(value) {
+  return value.length === new Set(value).size;
+}
+
+/**
+ *
+ * @param {number} number
+ * @param {number} from
+ * @param {number} to
+ * @returns {boolean}
+ */
+export function checkNumberRange(number, from, to) {
+  return number >= from && number <= to;
+}
+
+export function checkStringLength(str, len) {
+  return str.split(',').length === len;
 }
