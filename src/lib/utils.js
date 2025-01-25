@@ -1,3 +1,4 @@
+import { Random } from '@woowacourse/mission-utils';
 /* eslint no-restricted-globals: "off" */
 
 /**
@@ -68,4 +69,15 @@ export function checkNumberRange(number, from, to) {
 
 export function checkStringLength(str, len) {
   return str.split(',').length === len;
+}
+
+/**
+ *
+ * @param {number} start
+ * @param {number} end
+ * @param {number} count
+ * @returns {Array<number>}
+ */
+export function generateUniqueNumbersInRange(start, end, count) {
+  return Random.pickUniqueNumbersInRange(start, end, count);
 }

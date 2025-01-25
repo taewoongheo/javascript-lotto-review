@@ -13,6 +13,13 @@ class Lotto {
   }
 
   // TODO: 추가 기능 구현
+  /**
+   *
+   * @returns {Array<number>}
+   */
+  getLotteryNumbers() {
+    return this.#numbers;
+  }
 }
 
 export default Lotto;

@@ -16,6 +16,18 @@ class LottoMachineController {
   async init() {
     const purchaseAmount = await this.#view.getLotteryPurchaseAmount();
     this.#service.inputPurchaseAmount(purchaseAmount);
+
+    this.#view.printLineBreak();
+
+    const { lotteryTicketCounts, lotteryTickets } =
+      this.#service.generateLotteryTickets();
+    this.#view.printPurchaseLotteryTicketInfo(
+      lotteryTicketCounts,
+      lotteryTickets,
+    );
+
+    this.#view.printLineBreak();
+
     const lotteryNumbers = await this.#view.getLotteryWinningNumbers();
     this.#service.inputWinningNumbers(lotteryNumbers);
     const bonusNumber = await this.#view.getLotteryBonusNumber();

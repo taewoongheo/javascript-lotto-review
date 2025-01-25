@@ -1,6 +1,8 @@
 import WinningNumbersValidationStrategy from '../validation/winning-numbers-validation.strategy.js';
 import PurchaseAmountValidationStrategy from '../validation/purchase-amount-validation.strategy.js';
 import BonusNumberValidationStrategy from '../validation/bonus-number-validatoin.strategy.js';
+import Lotto from '../Lotto.js';
+import { generateUniqueNumbersInRange } from '../lib/utils.js';
 
 class LottoMachineService {
   /** @type {LottoMachineModel} */
@@ -76,6 +78,10 @@ class LottoMachineService {
     return Number(bonusNumber);
   }
 
+  /**
+   *
+   * @param {number} bonusNumber
+   */
   inputBonusNumber(bonusNumber) {
     this.#lotteryMachineValidator.validate(
       new BonusNumberValidationStrategy(
@@ -88,6 +94,49 @@ class LottoMachineService {
     this.#lotteryMachineModel.setBonusNumber(
       this.#parseBonusNumber(bonusNumber),
     );
+  }
+
+  /**
+   *
+   * @returns {number}
+   */
+  #calculateLotteryTicketCount() {
+    return this.#lotteryMachineModel.getPurchaseAmount() / 1000;
+  }
+
+  /**
+   *
+   * @returns {boolean}
+   */
+  #isGeneratingLotteryTickets() {
+    return (
+      this.#lotteryMachineModel.getLotteryTickets().length !==
+      this.#calculateLotteryTicketCount()
+    );
+  }
+
+  /**
+   *
+   * @returns {Array<number>}
+   */
+  #generateLotteryTicket() {
+    return generateUniqueNumbersInRange(1, 45, 6);
+  }
+
+  /**
+   *
+   * @returns {{ lotteryTicketCounts: number; lotteryTickets: Array<number[]> }}
+   */
+  generateLotteryTickets() {
+    while (this.#isGeneratingLotteryTickets()) {
+      this.#lotteryMachineModel.setLotteryTicket(
+        new Lotto(this.#generateLotteryTicket()),
+      );
+    }
+    return {
+      lotteryTicketCounts: this.#lotteryMachineModel.getLotteryTicketCounts(),
+      lotteryTickets: this.#lotteryMachineModel.getLotteryTicketNumbers(),
+    };
   }
 }
 
