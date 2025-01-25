@@ -53,6 +53,14 @@ class LottoMachineModel {
 
   /**
    *
+   * @returns {number}
+   */
+  getBonusNumber() {
+    return this.#bonusNumber;
+  }
+
+  /**
+   *
    * @returns {Array<LotteryModel>}
    */
   getLotteryTickets() {

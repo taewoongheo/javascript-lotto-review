@@ -3,11 +3,11 @@ import ValidationContext from '../validation/validation.context.js';
 import LottoMachineController from './LottoMachineController.js';
 import LottoMachineModel from './LottoMachineModel.js';
 import LottoMachineService from './LottoMachineService.js';
-import LottoMachineView from './LottoMachineView.js';
+import LotteryMachineView from './LottoMachineView.js';
 
 const lottoMachineModule = new Module({
   models: [LottoMachineModel],
-  views: [LottoMachineView],
+  views: [LotteryMachineView],
   controllers: [LottoMachineController],
   services: [LottoMachineService],
   providers: [ValidationContext],

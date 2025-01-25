@@ -138,6 +138,153 @@ class LottoMachineService {
       lotteryTickets: this.#lotteryMachineModel.getLotteryTicketNumbers(),
     };
   }
+
+  /**
+   *
+   * @param {Array<number>} lotteryTicketNumber
+   * @returns {number}
+   */
+  #countMatchingLotteryNumber(lotteryTicketNumber) {
+    return lotteryTicketNumber.filter((ticketNumber) =>
+      this.#lotteryMachineModel.getWinningNumbers().includes(ticketNumber),
+    ).length;
+  }
+
+  /**
+   *
+   * @param {Array<number>} lotteryTicketNumber
+   * @returns {boolean}
+   */
+  #hasBonusNumber(lotteryTicketNumber) {
+    return lotteryTicketNumber.includes(
+      this.#lotteryMachineModel.getBonusNumber(),
+    );
+  }
+
+  /**
+   *
+   * @param {WinningStatistics} winningStatistics
+   * @param {number} matchedLotteryNumber
+   * @param {boolean} hasBonusNumber
+   * @returns {WinningStatistics}
+   */
+  #calculateNextWinningStatistics(
+    winningStatistics,
+    matchedLotteryNumber,
+    hasBonusNumber,
+  ) {
+    if (matchedLotteryNumber < 3) {
+      return { ...winningStatistics };
+    }
+    if (hasBonusNumber && matchedLotteryNumber === 5) {
+      return {
+        ...winningStatistics,
+        bonus: winningStatistics.bonus + 1,
+      };
+    }
+    return {
+      ...winningStatistics,
+      [matchedLotteryNumber]: winningStatistics[matchedLotteryNumber] + 1,
+    };
+  }
+
+  /**
+   *
+   * @param {WinningStatistics} winningStatistics
+   * @param {Array<number>} lotteryTicketNumber
+   * @returns {WinningStatistics}
+   */
+  #calculateWinningStatistics(winningStatistics, lotteryTicketNumber) {
+    const matchedLotteryNumber =
+      this.#countMatchingLotteryNumber(lotteryTicketNumber);
+    const hasBonusNumber = this.#hasBonusNumber(lotteryTicketNumber);
+    return this.#calculateNextWinningStatistics(
+      winningStatistics,
+      matchedLotteryNumber,
+      hasBonusNumber,
+    );
+  }
+
+  /**
+   *
+   * @param {Array<number[]>} lotteryTicketNumbers
+   * @returns {WinningStatistics}
+   */
+  #createWinningStatistics(lotteryTicketNumbers) {
+    return lotteryTicketNumbers.reduce(
+      (winningStatistics, lotteryTicketNumber) =>
+        this.#calculateWinningStatistics(
+          winningStatistics,
+          lotteryTicketNumber,
+        ),
+      { 3: 0, 4: 0, 5: 0, 6: 0, bonus: 0 },
+    );
+  }
+
+  /**
+   *
+   * @returns {{ winningStatistics: WinningStatistics; winningAmount: WinningAmount }}
+   */
+  generateWinningStatistics() {
+    return {
+      winningStatistics: this.#createWinningStatistics(
+        this.#lotteryMachineModel.getLotteryTicketNumbers(),
+      ),
+      winningAmount: {
+        3: '5,000',
+        4: '50,000',
+        5: '1,500,000',
+        6: '2,000,000,000',
+        bonus: '30,000,000',
+      },
+    };
+  }
+
+  /**
+   *
+   * @param {string} winningAmount
+   * @returns {number}
+   */
+  #parseWinningAmount(winningAmount) {
+    return Number(winningAmount.split(',').join(''));
+  }
+
+  /**
+   *
+   * @param {WinningStatistics} winningStatistics
+   * @param {WinningAmount} winningAmount
+   * @returns {number}
+   */
+  #calculateTotalWinningAmount(winningStatistics, winningAmount) {
+    return Object.entries(winningStatistics).reduce(
+      (totalWinningAmount, [winningNumber, winningCount]) => {
+        if (winningCount === 0) {
+          return totalWinningAmount;
+        }
+        return (
+          totalWinningAmount +
+          this.#parseWinningAmount(winningAmount[winningNumber]) * winningCount
+        );
+      },
+      0,
+    );
+  }
+
+  /**
+   *
+   * @param {WinningStatistics} winningStatistics
+   * @param {WinningAmount} winningAmount
+   * @returns {number}
+   */
+  calculateTotalReturnRate(winningStatistics, winningAmount) {
+    return (
+      Math.ceil(
+        (this.#calculateTotalWinningAmount(winningStatistics, winningAmount) /
+          this.#lotteryMachineModel.getPurchaseAmount()) *
+          1000,
+      ) / 10
+    );
+  }
 }
 
 export default LottoMachineService;
