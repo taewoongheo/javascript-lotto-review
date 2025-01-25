@@ -18,6 +18,8 @@ class LottoMachineController {
     this.#service.inputPurchaseAmount(purchaseAmount);
     const lotteryNumbers = await this.#view.getLotteryWinningNumbers();
     this.#service.inputWinningNumbers(lotteryNumbers);
+    const bonusNumber = await this.#view.getLotteryBonusNumber();
+    this.#service.inputBonusNumber(bonusNumber);
   }
 }
 
